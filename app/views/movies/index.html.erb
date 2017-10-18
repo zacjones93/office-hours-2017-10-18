@@ -1,0 +1,32 @@
+<% @movies.each do |movie| %>
+	<h1><%= movie.title %></h1>
+	<h2><%= movie.year %></h2>
+	<p>
+		<%= movie.description %>
+	</p>
+
+	<% movie.comments.each do |comment| %>
+		<blockquote><%= comment.message %></blockquote>
+	<% end %>
+
+	<%= simple_form_for Comment.new, url: movie_comments_path(movie) do |f| %>
+		<%= f.input :message %>
+		<%= f.submit "Submit", class: "btn btn-info" %>
+	<% end %>
+	
+	<div class="bottom">
+		<div class="float-left wider">
+			<% if current_user.nil? %>
+				Sign in!
+			<% elsif movie.liked_by?(current_user) %>
+				Liked!
+			<% else %>
+				<%= link_to 'Like',  movie_likes_path(movie), method: "POST", class: "btn btn-primary" %>
+			<% end %>
+		</div>
+		<div class="float-left">
+			<span><%= movie.likes.count %> likes</span>
+		</div>
+	</div>
+	<hr />
+<% end %>
